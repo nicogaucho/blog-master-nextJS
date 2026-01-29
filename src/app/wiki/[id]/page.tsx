@@ -1,4 +1,8 @@
+import { notFound } from "next/navigation";
 import WikiArticleViewer from "@/components/wiki-article-viewer";
+import { stackServerApp } from "@/stack/server";
+import { getArticleById } from "@/lib/data/articles";
+import { authorizeUserToEditArticle } from "@/db/authz";
 
 interface ViewArticlePageProps {
   params: Promise<{
@@ -12,10 +16,27 @@ export default async function ViewArticlePage({
   const { id } = await params;
 
   // Mock permission check - in a real app, this would come from auth/user context
-  const canEdit = true; // Set to true for demonstration
+  let canEdit = true; // Set to true for demonstration
+
+  try {
+    const user = await stackServerApp.getUser();
+    console.log({ user });
+    if (user) {
+      canEdit = await authorizeUserToEditArticle(user.id, +id);
+    }
+  } catch (_err) {
+    // On error, default to not allowing edits. Keeps behavior safe.
+    canEdit = false;
+  }
+
+  const article = await getArticleById(+id);
+
+  if (!article) {
+    notFound();
+  }
 
   // Mock article data - in a real app, this would be fetched from an API
-  const mockArticle = {
+  /* const mockArticle = {
     id: +id,
     title: "Welcome to WikiFlow",
     content: `# Getting Started with WikiFlow
@@ -104,7 +125,7 @@ Happy writing! 🚀`,
     author: "Admin User",
     createdAt: "2024-01-15",
     imageUrl: "/placeholder-image.svg", // Using SVG placeholder for demonstration
-  };
+  }; */
 
-  return <WikiArticleViewer article={mockArticle} canEdit={canEdit} />;
+  return <WikiArticleViewer article={article} canEdit={canEdit} />;
 }
