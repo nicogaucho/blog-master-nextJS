@@ -1,8 +1,12 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { eq } from "drizzle-orm";
+
 import { stackServerApp } from "@/stack/server";
 import { ensureUserExists } from "@/db/sync-user";
+import db from "@/db/index";
+import { articles } from "@/db/schema";
 
 export type CreateArticleInput = {
   title: string;
@@ -18,35 +22,59 @@ export type UpdateArticleInput = {
 };
 
 export async function createArticle(data: CreateArticleInput) {
-  const user = stackServerApp.getUser();
+  const user = await stackServerApp.getUser();
   if (!user) {
+    console.error("Unauthorized attempt to create article");
     throw new Error("❌ Unauthorized");
   }
 
   await ensureUserExists(user);
-  // await ensureUserExists(user);
-  // TODO: Replace with actual database call
+
+  // use drizzle to insert the article into the database
   console.log("✨ createArticle called:", data);
-  return { success: true, message: "Article create logged (stub)" };
+
+  const response = await db
+    .insert(articles)
+    .values({
+      title: data.title,
+      content: data.content,
+      slug: `${Date.now()}`,
+      published: true,
+      authorId: user.id,
+    })
+    .returning({ id: articles.id });
+
+  const articleId = response[0]?.id;
+  return { success: true, message: "Article create logged", id: articleId };
 }
 
 export async function updateArticle(id: string, data: UpdateArticleInput) {
-  const user = stackServerApp.getUser();
+  const user = await stackServerApp.getUser();
   if (!user) {
     throw new Error("❌ Unauthorized");
   }
-  // TODO: Replace with actual database update
   console.log("📝 updateArticle called:", { id, ...data });
+
+  await db.update(articles)
+    .set({
+      title: data.title,
+      content: data.content,
+    })
+    .where(eq(articles.id, +id));
+
   return { success: true, message: `Article ${id} update logged (stub)` };
 }
 
 export async function deleteArticle(id: string) {
-  const user = stackServerApp.getUser();
+  const user = await stackServerApp.getUser();
   if (!user) {
     throw new Error("❌ Unauthorized");
   }
   // TODO: Replace with actual database delete
   console.log("🗑️ deleteArticle called:", id);
+
+  await db.delete(articles).where(eq(articles.id, +id));
+
   return { success: true, message: `Article ${id} delete logged (stub)` };
 }
 
