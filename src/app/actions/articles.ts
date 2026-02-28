@@ -1,12 +1,12 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
-
-import { stackServerApp } from "@/stack/server";
-import { ensureUserExists } from "@/db/sync-user";
+import { redirect } from "next/navigation";
+import { authorizeUserToEditArticle } from "@/db/authz";
 import db from "@/db/index";
 import { articles } from "@/db/schema";
+import { ensureUserExists } from "@/db/sync-user";
+import { stackServerApp } from "@/stack/server";
 
 export type CreateArticleInput = {
   title: string;
@@ -53,9 +53,16 @@ export async function updateArticle(id: string, data: UpdateArticleInput) {
   if (!user) {
     throw new Error("❌ Unauthorized");
   }
+
+  if (!(await authorizeUserToEditArticle(user.id, +id))) {
+    console.error(`User ${user.id} is not authorized to edit article ${id}`);
+    throw new Error("❌ Forbidden");
+  }
+
   console.log("📝 updateArticle called:", { id, ...data });
 
-  await db.update(articles)
+  await db
+    .update(articles)
     .set({
       title: data.title,
       content: data.content,
@@ -70,7 +77,12 @@ export async function deleteArticle(id: string) {
   if (!user) {
     throw new Error("❌ Unauthorized");
   }
-  // TODO: Replace with actual database delete
+
+  if (!(await authorizeUserToEditArticle(user.id, +id))) {
+    console.error(`User ${user.id} is not authorized to delete article ${id}`);
+    throw new Error("❌ Forbidden");
+  }
+
   console.log("🗑️ deleteArticle called:", id);
 
   await db.delete(articles).where(eq(articles.id, +id));

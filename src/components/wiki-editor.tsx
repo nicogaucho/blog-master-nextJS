@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import MDEditor from "@uiw/react-md-editor";
 import { Upload, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 import { createArticle, updateArticle } from "@/app/actions/articles";
@@ -30,7 +30,7 @@ export default function WikiEditor({
   initialContent = "",
   isEditing = false,
   articleId,
-  userId = "user-1"
+  userId = "user-1",
 }: WikiEditorProps) {
   const router = useRouter();
   const [title, setTitle] = useState(initialTitle);
@@ -119,7 +119,6 @@ export default function WikiEditor({
     } finally {
       setIsSubmitting(false);
     }
-
   };
 
   // Handle cancel

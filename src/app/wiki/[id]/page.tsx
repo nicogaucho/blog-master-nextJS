@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import WikiArticleViewer from "@/components/wiki-article-viewer";
-import { stackServerApp } from "@/stack/server";
-import { getArticleById } from "@/lib/data/articles";
 import { authorizeUserToEditArticle } from "@/db/authz";
+import { getArticleById } from "@/lib/data/articles";
+import { stackServerApp } from "@/stack/server";
 
 interface ViewArticlePageProps {
   params: Promise<{

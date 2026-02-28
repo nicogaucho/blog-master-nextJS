@@ -1,4 +1,4 @@
-import { eq, gt, asc } from "drizzle-orm";
+import { asc, eq, gt } from "drizzle-orm";
 import db from "@/db/index";
 import { articles, usersSync } from "@/db/schema";
 
