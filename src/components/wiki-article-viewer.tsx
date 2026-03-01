@@ -8,6 +8,7 @@ import { deleteArticleForm } from "@/app/actions/articles";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import ZoomableImage from "@/components/ui/zoomble-image";
 
 interface ViewerArticle {
   title: string;
@@ -108,16 +109,20 @@ export default function WikiArticleViewer({
           {/* Article Image - Display if exists */}
           {article.imageUrl && (
             <div className="mb-8">
-              <div className="relative w-full h-64 md:h-80 rounded-lg overflow-hidden">
-                <Image
+              <div className="relative w-full h-64 md:h-96 rounded-lg overflow-hidden">
+              <ZoomableImage
+                src={article.imageUrl}
+                alt={`Image for ${article.title}`}
+              />
+              </div>
+            </div>
+           /*  <Image
                   src={article.imageUrl}
                   alt={`Image for ${article.title}`}
                   fill
-                  className="object-cover"
+                  className="object-cover object-center"
                   priority
-                />
-              </div>
-            </div>
+                /> */
           )}
 
           {/* Rendered Markdown Content */}

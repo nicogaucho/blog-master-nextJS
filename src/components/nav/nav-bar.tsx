@@ -15,7 +15,7 @@ export default async function Navbar() {
     <header className="sticky top-0 z-50 w-full shadow-sm bg-white">
       <nav className="mx-auto flex w-full items-center justify-between px-6 py-3">
         <div className="flex items-center gap-4">
-          <span className="text-lg font-semibold">Wikiblog Master</span>
+          <span className="text-lg font-semibold">The Ocean Affairs Blog</span>
         </div>
         <div className="flex items-center">
           <NavigationMenu>
