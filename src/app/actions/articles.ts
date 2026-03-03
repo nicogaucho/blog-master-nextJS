@@ -7,6 +7,7 @@ import db from "@/db/index";
 import { articles } from "@/db/schema";
 import { ensureUserExists } from "@/db/sync-user";
 import { stackServerApp } from "@/stack/server";
+import redis from "@/db-cache";
 
 export type CreateArticleInput = {
   title: string;
@@ -46,6 +47,9 @@ export async function createArticle(data: CreateArticleInput) {
     .returning({ id: articles.id });
 
   const articleId = response[0]?.id;
+
+  redis.del("articles:all"); // invalidate articles list cache in case of new article creation...
+
   return { success: true, message: "Article create logged", id: articleId };
 }
 
