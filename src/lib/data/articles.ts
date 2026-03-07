@@ -1,7 +1,7 @@
 import { asc, eq, gt } from "drizzle-orm";
 import db from "@/db/index";
 import { articles, usersSync } from "@/db/schema";
-import redis from "@/db-cache"; 
+import redis from "@/db-cache";
 
 // READ ALL ARTICLES
 export async function getArticles() {
@@ -9,7 +9,7 @@ export async function getArticles() {
   if (cachedArticles) {
     console.log("🗄️ Serving articles from cache 📦");
     return cachedArticles;
-  } 
+  }
 
   console.log("🔎 Fetching articles from database 🤖");
 
@@ -20,6 +20,7 @@ export async function getArticles() {
       createdAt: articles.createdAt,
       content: articles.content,
       author: usersSync.name,
+      summary: articles.summary
     })
     .from(articles)
     .leftJoin(usersSync, eq(articles.authorId, usersSync.id));
@@ -38,6 +39,7 @@ export const nextArticlesPage = async (cursor?: number, pageSize = 5) => {
       createdAt: articles.createdAt,
       content: articles.content,
       author: usersSync.name,
+      summary: articles.summary
     })
     .from(articles)
     .where(cursor ? gt(articles.id, cursor) : undefined) // if cursor is provided, get rows after it

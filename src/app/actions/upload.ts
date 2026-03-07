@@ -1,7 +1,7 @@
 "use server";
 
-import { stackServerApp } from "@/stack/server";
 import { put } from "@vercel/blob";
+import { stackServerApp } from "@/stack/server";
 
 // Server action to handle uploads (stub)
 
@@ -47,7 +47,7 @@ export async function uploadFile(formData: FormData): Promise<UploadedFile> {
   // access: "public" is essential as we want anyone to able to see these images.
 
   // addRandomSuffix: true is also important - if I upload pic.jpg and then you do with the same file name, it would overwrite it. But with this property set it's guaranteed to not collide.
-  
+
   // I already did all the validation that it's an image, not over 10MB, it's attached.
 
   try {

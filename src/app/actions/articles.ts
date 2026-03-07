@@ -6,14 +6,16 @@ import { authorizeUserToEditArticle } from "@/db/authz";
 import db from "@/db/index";
 import { articles } from "@/db/schema";
 import { ensureUserExists } from "@/db/sync-user";
-import { stackServerApp } from "@/stack/server";
 import redis from "@/db-cache";
+import { stackServerApp } from "@/stack/server";
+import summarizeArticle from "@/ai/summarize";
 
 export type CreateArticleInput = {
   title: string;
   content: string;
   authorId: string;
   imageUrl?: string;
+  summary?: string;
 };
 
 export type UpdateArticleInput = {
@@ -34,6 +36,9 @@ export async function createArticle(data: CreateArticleInput) {
   // use drizzle to insert the article into the database
   console.log("✨ createArticle called:", data);
 
+
+  const summary = await summarizeArticle(data.title || "", data.content || "");
+
   const response = await db
     .insert(articles)
     .values({
@@ -42,7 +47,8 @@ export async function createArticle(data: CreateArticleInput) {
       slug: `${Date.now()}`,
       published: true,
       authorId: user.id,
-      imageUrl: data.imageUrl ?? undefined
+      imageUrl: data.imageUrl ?? undefined,
+      summary
     })
     .returning({ id: articles.id });
 
@@ -66,12 +72,16 @@ export async function updateArticle(id: string, data: UpdateArticleInput) {
 
   console.log("📝 updateArticle called:", { id, ...data });
 
+  const summary = await summarizeArticle(data.title || "", data.content || "");
+
+
   await db
     .update(articles)
     .set({
       title: data.title,
       content: data.content,
-      imageUrl: data.imageUrl ?? undefined
+      imageUrl: data.imageUrl ?? undefined,
+      summary: summary ?? undefined,
     })
     .where(eq(articles.id, +id));
 

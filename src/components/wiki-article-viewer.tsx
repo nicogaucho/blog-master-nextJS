@@ -1,14 +1,24 @@
 "use client";
 
-import { Calendar, ChevronRight, Edit, Home, Trash, User } from "lucide-react";
-import Image from "next/image";
+import {
+  Calendar,
+  ChevronRight,
+  Edit,
+  Eye,
+  Home,
+  Trash,
+  User,
+} from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { deleteArticleForm } from "@/app/actions/articles";
+import { incrementPageview } from "@/app/actions/pageviews";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import ZoomableImage from "@/components/ui/zoomble-image";
+import { formatDate } from "@/lib/utils";
 
 interface ViewerArticle {
   title: string;
@@ -29,15 +39,19 @@ export default function WikiArticleViewer({
   article,
   canEdit = false,
 }: WikiArticleViewerProps) {
-  // Format date for display
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
+  const [localPageviews, setLocalpageviews] = useState<number | null>(0);
+
+  useEffect(() => {
+    async function fetchPageview() {
+      const newCount = await incrementPageview(article.id);
+      console.log(
+        `Pageview count for article ${article.id} incremented to:`,
+        newCount,
+      );
+      setLocalpageviews(newCount ?? null);
+    }
+    fetchPageview();
+  }, [article.id]);
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -73,6 +87,11 @@ export default function WikiArticleViewer({
             </div>
             <div className="flex items-center">
               <Badge variant="secondary">Article</Badge>
+            </div>
+            <div className="ml-3 flex items-center text-sm text-muted-foreground">
+              <Eye className="h-4 w-4 mr-1" />
+              <span>{localPageviews ? localPageviews : "—"}</span>
+              <span className="ml-1">viewers</span>
             </div>
           </div>
         </div>
@@ -110,13 +129,13 @@ export default function WikiArticleViewer({
           {article.imageUrl && (
             <div className="mb-8">
               <div className="relative w-full h-64 md:h-96 rounded-lg overflow-hidden">
-              <ZoomableImage
-                src={article.imageUrl}
-                alt={`Image for ${article.title}`}
-              />
+                <ZoomableImage
+                  src={article.imageUrl}
+                  alt={`Image for ${article.title}`}
+                />
               </div>
             </div>
-           /*  <Image
+            /*  <Image
                   src={article.imageUrl}
                   alt={`Image for ${article.title}`}
                   fill

@@ -1,5 +1,5 @@
-import { useState } from "react";
 import Image from "next/image";
+import { useState } from "react";
 
 type Props = {
   src: string;
@@ -9,16 +9,16 @@ type Props = {
   height?: number;
 };
 
-export default function ZoomableImage({
-  src,
-  alt = "",
-}: Props) {
+export default function ZoomableImage({ src, alt = "" }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
     <>
       {/* thumbnail / clickable image */}
-      <div className="cursor-pointer inline-block" onClick={() => setOpen(true)}>
+      <div
+        className="cursor-pointer inline-block"
+        onClick={() => setOpen(true)}
+      >
         <Image
           src={src}
           alt={alt}
@@ -32,7 +32,7 @@ export default function ZoomableImage({
       {open && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70"
-          onClick={() => setOpen(false)}            // click outside closes
+          onClick={() => setOpen(false)} // click outside closes
         >
           <div className="overflow-auto max-w-full max-h-full p-4">
             <Image
@@ -44,7 +44,7 @@ export default function ZoomableImage({
             />
             <button
               className="absolute top-2 right-2 text-white text-2xl"
-              onClick={() => setOpen(false)}          // close button
+              onClick={() => setOpen(false)} // close button
             >
               &times;
             </button>
