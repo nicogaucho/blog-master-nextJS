@@ -1,4 +1,4 @@
-# WikiFlow / The Ocean Affairs
+# The Ocean Affairs Blog
 
 A full‑stack blog application built with **Next.js** (App Router) and **TypeScript**.
 This repository demonstrates a modern web stack and includes:
