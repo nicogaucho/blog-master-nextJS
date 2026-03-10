@@ -47,7 +47,7 @@ export function WikiCard({
       <CardFooter className="pt-2">
         <Link
           href={href}
-          className="text-blue-800 hover:underline text-sm font-medium w-fit"
+          className="text-sky-600 hover:underline text-sm font-medium w-fit"  
         >
           Read full article &rarr;
         </Link>
