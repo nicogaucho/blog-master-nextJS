@@ -36,9 +36,14 @@ export async function sendNewsletterEmail(
     const { data, error } = await resend.emails.send({
       from: "Acme <onboarding@resend.dev>",
       // to: authorEmail,
-      to: ['nicola.gasp11@gmail.com'],
+      to: ["nicola.gasp11@gmail.com"],
       subject: `✨ You article got ${pageviews} views! ✨`,
-      react: CelebrationTemplate({ pageviews, name: name || "Friend", articleTitle: title || undefined, articleUrl: `${BASE_URL}/wiki/${articleId}` }),
+      react: CelebrationTemplate({
+        pageviews,
+        name: name || "Friend",
+        articleTitle: title || undefined,
+        articleUrl: `${BASE_URL}/wiki/${articleId}`,
+      }),
     });
 
     if (error) {

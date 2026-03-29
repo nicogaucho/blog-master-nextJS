@@ -6,9 +6,11 @@ import {
   Edit,
   Eye,
   Home,
+  MapIcon,
   Trash,
   User,
 } from "lucide-react";
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -92,6 +94,14 @@ export default function WikiArticleViewer({
               <Eye className="h-4 w-4 mr-1" />
               <span>{localPageviews ? localPageviews : "—"}</span>
               <span className="ml-1">viewers</span>
+            </div>
+            <div className="ml-3 flex items-center text-sm text-muted-foreground">
+              <Link href={`/maps/${article.id}`} className="cursor-pointer">
+                <Button className="cursor-pointer">
+                  <MapIcon className="h-4 w-4 mr-2" />
+                  Article Map
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

@@ -30,7 +30,7 @@ export async function getArticles(): Promise<ArticleList[]> {
       createdAt: articles.createdAt,
       content: articles.content,
       author: usersSync.name,
-      summary: articles.summary
+      summary: articles.summary,
     })
     .from(articles)
     .leftJoin(usersSync, eq(articles.authorId, usersSync.id));
@@ -41,7 +41,10 @@ export async function getArticles(): Promise<ArticleList[]> {
 }
 
 // READ WITH CORSOR PAGINATED ARTICLES
-export const nextArticlesPage = async (cursor?: number, pageSize = 5): Promise<ArticleList[]> => {
+export const nextArticlesPage = async (
+  cursor?: number,
+  pageSize = 5,
+): Promise<ArticleList[]> => {
   const response = await db
     .select({
       title: articles.title,
@@ -49,7 +52,7 @@ export const nextArticlesPage = async (cursor?: number, pageSize = 5): Promise<A
       createdAt: articles.createdAt,
       content: articles.content,
       author: usersSync.name,
-      summary: articles.summary
+      summary: articles.summary,
     })
     .from(articles)
     .where(cursor ? gt(articles.id, cursor) : undefined) // if cursor is provided, get rows after it
@@ -69,7 +72,9 @@ export type ArticleWithAuthor = {
 };
 
 // READ ONE ARTICLE
-export async function getArticleById(id: number): Promise<ArticleWithAuthor | null> {
+export async function getArticleById(
+  id: number,
+): Promise<ArticleWithAuthor | null> {
   const response = await db
     .select({
       title: articles.title,

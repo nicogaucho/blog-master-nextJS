@@ -27,15 +27,15 @@ export default async function Navbar() {
             <NavigationMenuList className="gap-4">
               {user ? (
                 <>
-                <NavigationMenuItem>
-                  <Button asChild variant="outline">
-                    <Link href="/wiki/edit/new">New Article</Link>
-                  </Button>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <UserButton />
-                </NavigationMenuItem>
-              </>
+                  <NavigationMenuItem>
+                    <Button asChild variant="outline">
+                      <Link href="/wiki/edit/new">New Article</Link>
+                    </Button>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <UserButton />
+                  </NavigationMenuItem>
+                </>
               ) : (
                 <>
                   <NavigationMenuItem>

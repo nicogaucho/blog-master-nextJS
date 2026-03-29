@@ -83,8 +83,8 @@ const CelebrationTemplate = ({
                 ) : null}
 
                 <p style={{ marginTop: 18, color: "#94a3b8", fontSize: 13 }}>
-                  Keep reading and sharing — you're helping other people learn. — The
-                  Ocean Affairs team 🌊
+                  Keep reading and sharing — you're helping other people learn.
+                  — The Ocean Affairs team 🌊
                 </p>
               </div>
             </td>
@@ -93,8 +93,8 @@ const CelebrationTemplate = ({
           <tr>
             <td style={{ paddingTop: 14 }}>
               <p style={{ margin: 0, color: "#94a3b8", fontSize: 12 }}>
-                You’re receiving this email because you authored content on
-                The Ocean Affairs.
+                You’re receiving this email because you authored content on The
+                Ocean Affairs.
               </p>
             </td>
           </tr>
