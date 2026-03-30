@@ -68,7 +68,7 @@ export function OverviewCard() {
 
         <div className="border-border/60 mt-4 border-t pt-4">
           <p className="text-muted-foreground text-[10px] tracking-wider uppercase">
-            Iran Conflict in last 7 days
+            Active Iran Conflict in last 7 days
           </p>
 
           <ChartContainer

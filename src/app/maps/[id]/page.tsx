@@ -10,6 +10,8 @@ import { OverviewCard } from "./components/overview-card";
 import {
   browsersRows,
   countriesRows,
+  getMarkerStyle,
+  LocationPoint,
   locations,
   referrersRows,
   visitedPagesRows,
@@ -27,20 +29,40 @@ function MapControlsCard() {
   return (
     <div className="border-border/40 bg-background/70 absolute top-4 right-4 z-20 flex items-center gap-3 rounded-lg border px-2.5 py-1.5 backdrop-blur-sm">
       <div className="flex items-center gap-3 text-xs">
+
         <div className="flex items-center gap-1.5">
-          <div className="size-2.5 shrink-0 rounded-full border border-white bg-sky-500 shadow-sm" />
-          <span>US military sites</span>
+          <div className="size-2.5 shrink-0 rounded-full border border-blue-300 bg-blue-500 ring-2 ring-blue-300/50 ring-offset-1 shadow-sm" />
+          <span>US Strikes</span>
         </div>
+
         <div className="bg-border h-4 w-px" />
+
         <div className="flex items-center gap-1.5">
-          <div className="size-2.5 shrink-0 rounded-full border border-white bg-sky-400 shadow-sm" />
-          <span>Iran military sites</span>
+          <div className="size-2.5 shrink-0 rounded-full border border-sky-300 bg-sky-400 ring-2 ring-sky-400/50 ring-offset-1 shadow-sm" />
+          <span>Iran Retaliatory Strikes</span>
         </div>
+
         <div className="bg-border h-4 w-px" />
+
         <div className="flex items-center gap-1.5">
-          <div className="size-2.5 shrink-0 rounded-full border border-white bg-sky-300 shadow-sm" />
+          <div className="size-2.5 shrink-0 rounded-sm border border-slate-200 bg-slate-400 shadow-sm" />
+          <span>US Military Sites</span>
+        </div>
+
+        <div className="bg-border h-4 w-px" />
+
+        <div className="flex items-center gap-1.5">
+          <div className="size-2.5 shrink-0 rounded-full border border-teal-200 bg-teal-400 shadow-sm" />
           <span>Chokepoints</span>
         </div>
+
+        <div className="bg-border h-4 w-px" />
+
+        <div className="flex items-center gap-1.5">
+          <div className="size-2.5 shrink-0 rounded-full border border-yellow-200 bg-yellow-400 shadow-sm" />
+          <span>Oil Tanker Traffic</span>
+        </div>
+
       </div>
     </div>
   );
@@ -64,7 +86,7 @@ export default async function ViewMapPage({ params }: ViewMapPageProps) {
           renderWorldCopies={true}
         >
           <MapControls showFullscreen />
-          {locations.map((location) => (
+          {locations.map((location: LocationPoint) => (
             <MapMarker
               key={location.city}
               longitude={location.lng}
@@ -72,10 +94,28 @@ export default async function ViewMapPage({ params }: ViewMapPageProps) {
             >
               <MarkerContent>
                 <div
-                  className="rounded-full bg-blue-500/70"
+                  className={`
+                    ${getMarkerStyle(location).color} 
+                    ${getMarkerStyle(location).border}
+                    ${getMarkerStyle(location).hoverScale}
+                    ${getMarkerStyle(location).activeScale}
+                    ${getMarkerStyle(location).shape === "square" ? "rounded-sm" : "rounded-full"}
+                    ${location.type === "us_strike" || location.type === "iran_retaliatory_strike" ? "ring-2 ring-white/30 ring-offset-1 ring-offset-transparent" : ""}
+                    ${location.activeStrike
+                      ? location.type === "us_strike"
+                        ? "animate-strikeBluePulse"
+                        : "animate-strikeSkyPulse"
+                      : ""
+                    }
+                    opacity-90
+                    hover:opacity-100
+                    transition-all
+                    duration-200
+                    cursor-pointer
+                  `}
                   style={{
-                    width: location.size * 3,
-                    height: location.size * 3,
+                    width: location.size * 2,
+                    height: location.size * 2,
                   }}
                 />
               </MarkerContent>
@@ -86,7 +126,7 @@ export default async function ViewMapPage({ params }: ViewMapPageProps) {
                 <p className="text-muted-foreground font-medium">
                   {location.city}
                 </p>
-                <p className="mt-0.5">{location.size} active conflict areas</p>
+                <p className="mt-0.5">{location.type}</p>
               </MarkerTooltip>
             </MapMarker>
           ))}

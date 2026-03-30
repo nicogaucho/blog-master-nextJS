@@ -1,10 +1,74 @@
 import type { ChartConfig } from "@/components/ui/chart";
 
+export type MarkerType = 
+  | "us_strike"
+  | "iran_retaliatory_strike"
+  | "us_military_site"
+  | "chokepoint"
+  | "oil_tanker_traffic";
+
+export interface MarkerStyle {
+  color: string;
+  border: string;
+  text: string;
+  shape: "circle" | "square";
+  hoverScale: string;
+  activeScale: string;
+  ring?: string;  // opzionale, solo per alcuni tipi
+}
+
+export const markerStyles: Record<MarkerType, MarkerStyle> = {
+  us_strike: {
+    color: "bg-blue-500",
+    border: "border-blue-300",
+    text: "text-blue-200",
+    shape: "circle",
+    hoverScale: "hover:scale-150",
+    activeScale: "active:scale-175",
+    ring: "ring-2 ring-orange-300/50 ring-offset-1 ring-offset-transparent",
+  },
+  iran_retaliatory_strike: {
+    color: "bg-sky-300",
+    border: "border-sky-300",
+    text: "text-sky-300",
+    shape: "circle",
+    hoverScale: "hover:scale-150",
+    activeScale: "active:scale-175",
+    ring: "ring-2 ring-sky-400/50 ring-offset-1 ring-offset-transparent",
+  },
+  us_military_site: {
+    color: "bg-slate-400",
+    border: "border-slate-200",
+    text: "text-slate-100",
+    shape: "square",
+    hoverScale: "hover:scale-90",
+    activeScale: "active:scale-125",
+  },
+  chokepoint: {
+    color: "bg-teal-400",
+    border: "border-teal-200",
+    text: "text-teal-100",
+    shape: "circle",
+    hoverScale: "hover:scale-90",
+    activeScale: "active:scale-125",
+  },
+  oil_tanker_traffic: {
+    color: "bg-yellow-400",
+    border: "border-yellow-200",
+    text: "text-yellow-100",
+    shape: "circle",
+    hoverScale: "hover:scale-80",
+    activeScale: "active:scale-125",
+  },
+};
+
 export interface LocationPoint {
   city: string;
   lng: number;
   lat: number;
   size: number;
+  type: MarkerType;
+  activeStrike: boolean;
 }
 
 export interface BreakdownRow {
@@ -13,25 +77,34 @@ export interface BreakdownRow {
 }
 
 export const locations: LocationPoint[] = [
-  { city: "San Francisco", lng: -122.4194, lat: 37.7749, size: 16 },
-  { city: "New York", lng: -74.006, lat: 40.7128, size: 15 },
-  { city: "Toronto", lng: -79.3832, lat: 43.6532, size: 11 },
-  { city: "Mexico City", lng: -99.1332, lat: 19.4326, size: 10 },
-  { city: "Sao Paulo", lng: -46.6333, lat: -23.5505, size: 12 },
-  { city: "Buenos Aires", lng: -58.3816, lat: -34.6037, size: 9 },
-  { city: "London", lng: -0.1276, lat: 51.5074, size: 14 },
-  { city: "Berlin", lng: 13.405, lat: 52.52, size: 11 },
-  { city: "Paris", lng: 2.3522, lat: 48.8566, size: 13 },
-  { city: "Madrid", lng: -3.7038, lat: 40.4168, size: 10 },
-  { city: "Cairo", lng: 31.2357, lat: 30.0444, size: 9 },
-  { city: "Lagos", lng: 3.3792, lat: 6.5244, size: 10 },
-  { city: "Mumbai", lng: 72.8777, lat: 19.076, size: 13 },
-  { city: "Dubai", lng: 55.2708, lat: 25.2048, size: 11 },
-  { city: "Seoul", lng: 126.978, lat: 37.5665, size: 12 },
-  { city: "Singapore", lng: 103.8198, lat: 1.3521, size: 10 },
-  { city: "Tokyo", lng: 139.6917, lat: 35.6895, size: 12 },
-  { city: "Sydney", lng: 151.2093, lat: -33.8688, size: 9 },
-  { city: "Auckland", lng: 174.7633, lat: -36.8485, size: 8 },
+  // 🟠 US strikes across Iran
+  { city: "Karaj", lng: 50.9391, lat: 35.8327, size: 13, type: "us_strike", activeStrike: false },
+  { city: "Kermanshah", lng: 47.0650, lat: 34.3277, size: 13, type: "us_strike", activeStrike: true },
+  { city: "Isfahan", lng: 51.6674, lat: 32.6539, size: 13, type: "us_strike", activeStrike: false },
+  { city: "Khomein", lng: 50.0758, lat: 33.6739, size: 13, type: "us_strike", activeStrike: false },
+  { city: "Defzul", lng: 48.3961, lat: 32.3442, size: 13, type: "us_strike", activeStrike: false },
+  { city: "Sahand", lng: 46.4672, lat: 37.7453, size: 13, type: "us_strike", activeStrike: true },
+  { city: "Minab", lng: 57.0819, lat: 27.1470, size: 13, type: "us_strike", activeStrike: true },
+  { city: "Kharg Island", lng: 50.3252, lat: 29.2338, size: 13, type: "us_strike", activeStrike: true },
+
+  // 🔴 Iran retaliatory strike
+  { city: "Tehran", lng: 51.3890, lat: 35.6892, size: 16, type: "iran_retaliatory_strike", activeStrike: true },
+  { city: "Qom", lng: 50.8764, lat: 34.6401, size: 16, type: "iran_retaliatory_strike", activeStrike: false },
+
+  // ⬛ US military sites
+  { city: "Al Udeid Air Base (Qatar)", lng: 51.3150, lat: 25.1170, size: 10, type: "us_military_site", activeStrike: false },
+  { city: "Ali Al Salem Air Base (Kuwait)", lng: 47.5200, lat: 29.3470, size: 10, type: "us_military_site", activeStrike: false },
+  { city: "Al Dhafra Air Base (UAE)", lng: 54.5476, lat: 24.2519, size: 10, type: "us_military_site", activeStrike: false },
+  { city: "Prince Sultan Air Base (Arabia)", lng: 47.5804, lat: 24.0627, size: 10, type: "us_military_site", activeStrike: false },
+  { city: "Diego Garcia", lng: 72.4343, lat: -7.3195, size: 10, type: "us_military_site", activeStrike: false },
+  { city: "Camp Arifjan (Kuwait)", lng: 48.0060, lat: 29.1778, size: 10, type: "us_military_site", activeStrike: false },
+  { city: "Incirlik (Turkey)", lng: 35.4259, lat: 37.0021, size: 10, type: "us_military_site", activeStrike: false },
+  { city: "NAS Sigonella (Sicily)", lng: 14.9224, lat: 37.3966, size: 10, type: "us_military_site", activeStrike: false },
+
+  // 🟢 Chokepoints
+  { city: "Strait of Hormuz", lng: 56.4000, lat: 26.5667, size: 10, type: "chokepoint", activeStrike: false },
+  { city: "Suez Canal", lng: 32.5498, lat: 30.4530, size: 10, type: "chokepoint", activeStrike: false },
+  { city: "Bab al-Mandab Strait", lng: 43.4500, lat: 12.5850, size: 10, type: "chokepoint", activeStrike: false },
 ];
 
 export const usersPerDay = [
@@ -52,15 +125,13 @@ export const usersPerDayChartConfig = {
 } satisfies ChartConfig;
 
 export const deviceCategoryData = [
-  { name: "Us sites", value: 12, fill: "var(--color-blue-500)" },
-  { name: "Iran sites", value: 22, fill: "var(--color-sky-400" },
-  { name: "Chokepoints", value: 8, fill: "var(--color-sky-300)" },
+  { name: "Us strikes", value: 60, fill: "var(--color-blue-500)" },
+  { name: "Iran strikes", value: 30, fill: "var(--color-sky-400" }
 ];
 
 export const deviceCategoryChartConfig = {
   desktop: { label: "Us Military sites", color: "var(--color-blue-500)" },
   mobile: { label: "Iran Military sites", color: "var(--color-sky-300)" },
-  tablet: { label: "Chokepoints", color: "var(--color-sky-400)" },
 } satisfies ChartConfig;
 
 export const visitedPagesRows: BreakdownRow[] = [
@@ -97,3 +168,8 @@ export const browsersRows: BreakdownRow[] = [
   { label: "Yemen", value: 8 },
   { label: "Other", value: 5 },
 ];
+
+// Helper per ottenere lo stile di un punto
+export const getMarkerStyle = (point: LocationPoint): MarkerStyle => {
+  return markerStyles[point.type];
+};
